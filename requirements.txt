@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+aiofiles
+python-multipart
+pydantic_settings
+pydantic
+langchain_community
+pymupdf
+langchain-text-splitters

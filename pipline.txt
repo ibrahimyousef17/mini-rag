@@ -1,0 +1,19 @@
+session one 
+    build config for settings by pydanti_settings
+    build welcome route 
+    build upload file route 
+          setup settings like file max size and extention 
+          validate file and setup response signal and statue 
+          create a new file name with unique name 
+                create a rondom_string (key) and clear the original_name finally joint between (key and orig original_name)
+          broke down the file to chunks to allow the alot user can upload in the same time by (aiofiles)
+
+session two 
+    session two tell how we process the file and split it to chunks .
+    so we create anthor endpoint called as process file .
+    this endpoint take the project id and json body request (file id/name , chunk size = optional , oerlap size optional from typing library )
+    the logic of this end point consist of 4 tasks 
+        -- first task was get file extention the this extention we determine the documnt_loader from langchain 
+        -- secondly task use the document loader to get the content and i gave it file path 
+        -- third task use the text_splitter from langchain to split the content and transform it to chunks 
+        
