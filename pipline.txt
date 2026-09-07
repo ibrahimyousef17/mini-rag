@@ -16,4 +16,16 @@ session two
         -- first task was get file extention the this extention we determine the documnt_loader from langchain 
         -- secondly task use the document loader to get the content and i gave it file path 
         -- third task use the text_splitter from langchain to split the content and transform it to chunks 
-        
+
+session three 
+    this session talk about how we to store this chunks in db (mongo)
+    firstly:-  we create the docker_compose to use the mongo service.  
+    secondly linked our app with mongodb using motor library that need the url of mongo service 
+    the linked operation done in lifspan of fastapi to ensure the mongodb service while app is start up 
+    secondly:- we create the pydantic file of (project-chunk) collection every file describe the data that must be in him collection 
+    third:- we create the file service or repository (project_service ,chunk_service) to describe the logic in each collection 
+            like :- in project => (create_project , get_project_or_create_one by(project_id), get_all_project), considering that pagination in get_all_project
+                    in chunk => (create_chunk - get_chunk - insert_many_chunk with batch size or bulk_write)
+    fourth: - use this methods in process and upload end points 
+
+session four: 

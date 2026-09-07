@@ -7,3 +7,4 @@ pydantic
 langchain_community
 pymupdf
 langchain-text-splitters
+motor

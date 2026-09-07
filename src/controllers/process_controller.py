@@ -2,7 +2,7 @@ from controllers.base_controller import BaseController
 from controllers.project_controller import ProjectController 
 from langchain_community.document_loaders import TextLoader , PyMuPDFLoader
 import os
-from models import ProcessEnums
+from models.enums import ProcessEnums
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 class ProcessController(BaseController): 
@@ -26,11 +26,11 @@ class ProcessController(BaseController):
             return TextLoader(file_path=file_path,encoding='utf-8')
         if file_extention == ProcessEnums.PDF.value:
             return PyMuPDFLoader(file_path=file_path)
-        return None
+        raise ValueError(f"Unsupported file extension: {file_extention}")
 
     def get_file_content(self,file_name:str):
         loader = self.get_file_loader(file_name=file_name)
-        return loader.load()  
+        return loader.load() 
 
     def process_file_content(self,file_name:str,chunk_size:int,chunk_overlap:int):
         text_splitter = RecursiveCharacterTextSplitter(
