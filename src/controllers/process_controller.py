@@ -22,6 +22,8 @@ class ProcessController(BaseController):
             self.project_path,
             file_name
         )
+        if not os.path.exists(file_path):
+            return None 
         if file_extention == ProcessEnums.TXT.value:
             return TextLoader(file_path=file_path,encoding='utf-8')
         if file_extention == ProcessEnums.PDF.value:
@@ -30,7 +32,9 @@ class ProcessController(BaseController):
 
     def get_file_content(self,file_name:str):
         loader = self.get_file_loader(file_name=file_name)
-        return loader.load() 
+        if loader:
+            return loader.load() 
+        return None 
 
     def process_file_content(self,file_name:str,chunk_size:int,chunk_overlap:int):
         text_splitter = RecursiveCharacterTextSplitter(
@@ -39,6 +43,8 @@ class ProcessController(BaseController):
                 length_function=len,
             )
         file_contents = self.get_file_content(file_name=file_name)
+        if file_contents is None :
+            return None
         file_content_text = [ doc.page_content
             for doc in file_contents
         ]

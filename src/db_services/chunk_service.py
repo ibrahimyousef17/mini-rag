@@ -2,11 +2,33 @@ from .base_service import BaseService
 from models.enums import DataBaseEnum
 from models.db_schemas import ChunkSchema 
 from pymongo import InsertOne
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from bson import ObjectId
 class ChunkService(BaseService):
-    def __init__(self, db_client: object):
+    def __init__(self, db_client: AsyncIOMotorDatabase):
         super().__init__(db_client)
-        self.collection = self.db_client[DataBaseEnum.collection_chunk_name.value] # type: ignore
+        self.collection = self.db_client[DataBaseEnum.collection_chunk_name.value] 
 
+    async def init_collection(self):
+        all_collections = await self.db_client.list_collection_names()
+        if DataBaseEnum.collection_chunk_name.value not in all_collections:
+            self.collection = self.db_client[DataBaseEnum.collection_chunk_name.value] 
+            indexes = ChunkSchema.get_indexes()
+            for index in indexes:
+                await self.collection.create_index(
+                                    keys=index['keys'],
+                                    name=index['name'],
+                                    unique=index['unique'],
+                                )
+    
+    @classmethod
+    async def create_instance(cls,db_client:AsyncIOMotorDatabase):
+        instance = cls(db_client)
+        await instance.init_collection()
+
+        return instance
+
+    
     async def create_chunk(self,chunk: ChunkSchema):
         result = await self.collection.insert_one(chunk.model_dump(by_alias=True,exclude_unset=True))
         chunk.id = result.inserted_id
@@ -33,7 +55,7 @@ class ChunkService(BaseService):
             await self.collection.bulk_write(operations)
         return len(chunks)
 
-    async def delete_chunks_by_project_id(self,project_id:str):
+    async def delete_chunks_by_project_id(self,project_id:ObjectId):
         result = await self.collection.delete_many({
             'project_id':project_id
         })

@@ -1,11 +1,30 @@
 from .base_service import BaseService 
 from models.enums import DataBaseEnum
 from models.db_schemas import ProjectSchema
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
 class ProjectService(BaseService):
-    def __init__(self, db_client: object):
+    def __init__(self, db_client: AsyncIOMotorDatabase):
         super().__init__(db_client=db_client)
-        self.collection = self.db_client[DataBaseEnum.collection_project_name.value]  # type: ignore
+        self.collection = self.db_client[DataBaseEnum.collection_project_name.value]  
+
+    async def init_collection(self):
+        all_collection = await self.db_client.list_collection_names()
+        if DataBaseEnum.collection_project_name.value not in all_collection:
+            self.collection = self.db_client[DataBaseEnum.collection_project_name.value]  
+            indexes = ProjectSchema.get_indexes()
+            for index in indexes:
+                await self.collection.create_index(
+                    keys=index['keys'],
+                    name=index['name'],
+                    unique=index['unique'],
+                )
+                
+    @classmethod
+    async def create_instance(cls,db_client:AsyncIOMotorDatabase):
+        instance = cls(db_client)
+        await instance.init_collection()
+        return instance
 
     async def create_project(self,project : ProjectSchema):
         result = await self.collection.insert_one(project.model_dump(by_alias=True,exclude_unset=True)) 

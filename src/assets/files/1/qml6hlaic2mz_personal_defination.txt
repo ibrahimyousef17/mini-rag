@@ -1,0 +1,3 @@
+I am Ibrahim Yousef Mohamed Rage . i am Ai Engineer. i studied the machine learning , deep learning , nlp ,
+fast api , sql postgres , N8N automation
+and computer vision and now i try to studing  the RAG , Agent , Prompt Engineer 

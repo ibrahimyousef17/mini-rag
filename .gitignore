@@ -15,6 +15,9 @@ pipline
 
 # Logs
 *.log
+# Exclude Docker Mongo data and env file
+docker/data/mongodb/
+docker/.env
 
 # System Files
 Thumbs.db
